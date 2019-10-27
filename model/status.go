@@ -5,33 +5,33 @@ import "issue-tracker/utils"
 type Status string
 
 const (
-	New        string = "new"
-	Refinement string = "refinement"
-	Ready      string = "ready"
-	ToDo       string = "to-do"
-	InProgress string = "in-progress"
-	InReview   string = "in-review"
-	Testing    string = "testing"
-	Done       string = "done"
-	OnHold     string = "on-hold"
-	Blocked    string = "blocked"
-	Cancelled  string = "cancelled"
-	Rejected   string = "rejected"
+	StatusNew        Status = "new"
+	StatusRefinement Status = "refinement"
+	StatusReady      Status = "ready"
+	StatusTodo       Status = "to-do"
+	StatusInProgress Status = "in-progress"
+	StatusInReview   Status = "in-review"
+	StatusTesting    Status = "testing"
+	StatusDone       Status = "done"
+	StatusOnHold     Status = "on-hold"
+	StatusBlocked    Status = "blocked"
+	StatusCancelled  Status = "cancelled"
+	StatusRejected   Status = "rejected"
 )
 
 var statusNames = map[Status]string{
-	"new":         "New",
-	"refinement":  "Refinement",
-	"ready":       "Ready",
-	"to-do":       "To Do",
-	"in-progress": "In Progress",
-	"in-review":   "Ready for Review",
-	"testing":     "Ready for Testing",
-	"done":        "Done",
-	"on-hold":     "On Hold",
-	"blocked":     "Blocked",
-	"cancelled":   "Cancelled",
-	"rejected":    "Rejected",
+	StatusNew:        "New",
+	StatusRefinement: "Refinement",
+	StatusReady:      "Ready",
+	StatusTodo:       "To Do",
+	StatusInProgress: "In Progress",
+	StatusInReview:   "Ready for Review",
+	StatusTesting:    "Ready for Testing",
+	StatusDone:       "Done",
+	StatusOnHold:     "On Hold",
+	StatusBlocked:    "Blocked",
+	StatusCancelled:  "Cancelled",
+	StatusRejected:   "Rejected",
 }
 
 var statusNamesKeys []Status
