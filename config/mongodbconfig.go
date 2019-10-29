@@ -13,7 +13,9 @@ type MongoClient struct {
 }
 
 func NewMongoConnection() *MongoClient {
+	// TODO: Set env var for mongoDB connection
 	clientOptions := options.Client().ApplyURI("mongodb://localhost:27017")
+	// TODO: Create a proper context
 	client, err := mongo.Connect(context.TODO(), clientOptions)
 	if err != nil {
 		log.Fatalf("Unable to connect to MongoDB: %s\n", err.Error())

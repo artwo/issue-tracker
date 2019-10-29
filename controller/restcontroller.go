@@ -16,7 +16,7 @@ type RestController struct {
 
 func newJsonRender() *render.Render {
 	return render.New(render.Options{
-		IndentJSON: true,
+		//IndentJSON: true,
 	})
 }
 
@@ -30,7 +30,7 @@ func NewRestController(ticketRepo repo.TicketRepository, ticketService service.T
 
 func (c *RestController) Routes() *chi.Mux {
 	router := chi.NewRouter()
-	router.Get("/", c.GetAllTickets)
+	router.Get("/ticket", c.GetAllTickets)
 	return router
 }
 

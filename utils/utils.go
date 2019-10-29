@@ -21,3 +21,5 @@ func ToIoReader(v interface{}) *bytes.Reader {
 	}
 	return bytes.NewReader(vBytes)
 }
+
+// TODO: Add UUID Generator

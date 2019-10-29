@@ -1,69 +1,61 @@
 package main
 
 import (
+	"github.com/go-chi/chi"
+	"github.com/go-chi/chi/middleware"
+	"github.com/go-chi/render"
 	"issue-tracker/config"
-	"issue-tracker/model"
+	"issue-tracker/controller"
 	"issue-tracker/repo"
-	"issue-tracker/utils"
+	"issue-tracker/service"
 	"log"
+	"net/http"
+	"time"
 )
 
+func Routes(c *controller.RestController) *chi.Mux {
+	router := chi.NewRouter()
+	router.Use(
+		controller.RequestTraceMiddleware,
+		render.SetContentType(render.ContentTypeJSON),
+		middleware.Logger,
+		middleware.RedirectSlashes,
+		middleware.RealIP,
+		middleware.Recoverer,
+	)
+	// Set a timeout value on the request context (ctx), that will signal
+	// through ctx.Done() that the request has timed out and further
+	// processing should be stopped.
+	router.Use(middleware.Timeout(60 * time.Second))
+
+	router.Route("/issue-tracker", func(r chi.Router) {
+		r.Mount("/v1", c.Routes())
+	})
+	return router
+}
+
+func walkFunc(method string, route string, handler http.Handler, middlewares ...func(http.Handler) http.Handler) error {
+	log.Printf("%s %s\n", method, route)
+	return nil
+}
+
 func main() {
+	log.Println("Starting Issue Tracker API.")
+	port := ":8080"
+
 	mongoClient := config.NewMongoConnection()
-	ticketrepo := repo.NewMongoTicketRepository(mongoClient.Client)
+	defer mongoClient.CloseMongoConnection()
 
-	ticket := ticketrepo.FindByID("1234")
-	log.Println(utils.ToString(ticket))
+	ticketRepo := repo.NewMongoTicketRepository(mongoClient.Client)
+	ticketService := service.NewTicketService(ticketRepo)
+	c := controller.NewRestController(ticketRepo, ticketService)
+	router := Routes(c)
 
-	err := ticketrepo.Delete("1234")
-	if err != nil {
-		log.Printf("Something wrong happends: %s\n", err)
-	}
-	err = ticketrepo.Delete("first-id")
-	if err != nil {
-		log.Printf("Something wrong happends: %s\n", err)
+	if err := chi.Walk(router, walkFunc); err != nil {
+		log.Fatalf("Logging err: %s\n", err.Error())
 	}
 
-	newTicket := model.Ticket{
-		ID:          "1234",
-		Title:       "This is a test ticket",
-		Description: "I'm a super Test!!",
-		Status:      model.StatusNew,
-	}
-	err = ticketrepo.Add(newTicket)
-	if err != nil {
-		log.Printf("Something wrong happends: %s\n", err)
-	}
-
-	newTicket.Status = model.StatusReady
-	err = ticketrepo.Update(newTicket)
-	if err != nil {
-		log.Printf("Something wrong happends: %s\n", err)
-	}
-
-	updateNonExistingTicket := model.Ticket{
-		ID:          "567",
-		Title:       "This is a test ticket",
-		Description: "I'm a super Test!!",
-		Status:      model.StatusNew,
-	}
-	err = ticketrepo.Update(updateNonExistingTicket)
-	if err != nil {
-		log.Printf("Something wrong happends: %s\n", err)
-	}
-	err = ticketrepo.Add(updateNonExistingTicket)
-	if err != nil {
-		log.Printf("Something wrong happends: %s\n", err)
-	}
-
-	tickets := ticketrepo.FindAll()
-	log.Println(utils.ToString(tickets))
-
-	tickets = ticketrepo.FindAllByStatus(model.StatusReady)
-	log.Println(utils.ToString(tickets))
-
-	err = mongoClient.CloseMongoConnection()
-	if err != nil {
-		log.Fatal(err)
-	}
+	log.Printf("API available at port '%s'.\n", port)
+	log.Fatal(http.ListenAndServe(port, router))
+	// TODO: create graceful shutdown
 }
