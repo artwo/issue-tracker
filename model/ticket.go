@@ -15,7 +15,7 @@ func (t *Ticket) Validate() []error {
 		errs = append(errs, errors.New("title field of Ticket is empty or undefined"))
 	}
 	if t.Status == "" {
-		errs = append(errs, errors.New("status field of Ticket is empty or undefined"))
+		t.Status = StatusNew
 	} else if !t.Status.IsValid() {
 		errs = append(errs, errors.New("status field of Ticket is unknown"))
 	}
