@@ -25,15 +25,15 @@ func (s *ticketService) GetTicket(ID string) model.Ticket {
 	return s.TicketRepo.FindByID(ID)
 }
 
-func (s *ticketService) AddTicket(ticket model.Ticket) error {
+func (s *ticketService) AddTicket(ticket model.Ticket) (model.Ticket, error) {
 	// TODO: Generate UUID
 	ticket.ID = "123"
 
 	if err := s.TicketRepo.Add(ticket); err != nil {
 		log.Println("Unable to create ticket, error: " + err.Error())
-		return errors.New("something unexpected happened while creating a new ticket")
+		return model.Ticket{}, errors.New("something unexpected happened while creating a new ticket")
 	}
-	return nil
+	return ticket, nil
 }
 
 func (s *ticketService) RemoveTicket(ID string) error {
