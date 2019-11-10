@@ -37,7 +37,7 @@ func (r *MongoTicketRepository) findMany(filter bson.D) []model.Ticket {
 
 	cur, err := r.collection.Find(context.TODO(), filter, nil)
 	if err != nil {
-		log.Printf("Unable to retrieve all tickets, error: %s\n", err)
+		log.Printf("Unable to retrieve tickets, error: %s\n", err)
 		return []model.Ticket{}
 	}
 
@@ -51,10 +51,10 @@ func (r *MongoTicketRepository) findMany(filter bson.D) []model.Ticket {
 	}
 
 	if err := cur.Err(); err != nil {
-		log.Printf("Something unexpected went wrong while retreaving all tickets, error: %s\n", err)
+		log.Printf("Something unexpected went wrong while retreaving tickets, error: %s\n", err)
 	}
 	if err := cur.Close(context.TODO()); err != nil {
-		log.Printf("Unable to close cursor while retreaving all tickets, error: %s\n", err)
+		log.Printf("Unable to close cursor while retreaving tickets, error: %s\n", err)
 	}
 
 	return results
