@@ -51,7 +51,7 @@ func main() {
 	boardRepo := repo.NewMongoBoardRepository(mongoClient.Client)
 	boardService := service.NewBoardService(boardRepo)
 
-	c := controller.NewRestController(ticketRepo, ticketService, boardRepo, boardService)
+	c := controller.NewRestController(ticketService, boardService)
 	router := Routes(c)
 
 	if err := chi.Walk(router, walkFunc); err != nil {

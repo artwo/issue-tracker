@@ -2,7 +2,6 @@ package controller
 
 import (
 	"issue-tracker/model"
-	"issue-tracker/repo"
 	"issue-tracker/service"
 	"net/http"
 
@@ -12,9 +11,7 @@ import (
 
 type RestController struct {
 	*render.Render
-	TicketRepo    repo.TicketRepository
 	TicketService service.TicketService
-	BoardRepo     repo.BoardRepository
 	BoardService  service.BoardService
 }
 
@@ -24,12 +21,10 @@ func newJSONRender() *render.Render {
 	})
 }
 
-func NewRestController(ticketRepo repo.TicketRepository, ticketService service.TicketService, boardRepo repo.BoardRepository, boardService service.BoardService) *RestController {
+func NewRestController(ticketService service.TicketService, boardService service.BoardService) *RestController {
 	return &RestController{
 		newJSONRender(),
-		ticketRepo,
 		ticketService,
-		boardRepo,
 		boardService,
 	}
 }
