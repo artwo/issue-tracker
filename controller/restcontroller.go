@@ -14,6 +14,8 @@ type RestController struct {
 	*render.Render
 	TicketRepo    repo.TicketRepository
 	TicketService service.TicketService
+	BoardRepo     repo.BoardRepository
+	BoardService  service.BoardService
 }
 
 func newJSONRender() *render.Render {
@@ -27,6 +29,8 @@ func NewRestController(ticketRepo repo.TicketRepository, ticketService service.T
 		newJSONRender(),
 		ticketRepo,
 		ticketService,
+		boardRepo,
+		boardService,
 	}
 }
 
