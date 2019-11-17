@@ -26,7 +26,7 @@ func (r *MongoTicketRepository) FindByID(ID string) model.Ticket {
 	var result model.Ticket
 	err := r.collection.FindOne(context.TODO(), bson.D{{"id", ID}}).Decode(&result)
 	if err != nil {
-		log.Printf("Unable to retrieve ticket with ID: '%s', error: %s\n", ID, err)
+		log.Printf("Unable to retrieve ticket with ID: '%s' from repo, error: %s\n", ID, err)
 		return model.Ticket{}
 	}
 	return result
@@ -37,7 +37,7 @@ func (r *MongoTicketRepository) findMany(filter bson.D) []model.Ticket {
 
 	cur, err := r.collection.Find(context.TODO(), filter, nil)
 	if err != nil {
-		log.Printf("Unable to retrieve tickets, error: %s\n", err)
+		log.Printf("Unable to retrieve tickets from repo, error: %s\n", err)
 		return []model.Ticket{}
 	}
 
@@ -45,16 +45,16 @@ func (r *MongoTicketRepository) findMany(filter bson.D) []model.Ticket {
 		var elem model.Ticket
 		err := cur.Decode(&elem)
 		if err != nil {
-			log.Printf("Unable to decode ticket, error: %s\n", err)
+			log.Printf("Unable to decode ticket from repo, error: %s\n", err)
 		}
 		results = append(results, elem)
 	}
 
 	if err := cur.Err(); err != nil {
-		log.Printf("Something unexpected went wrong while retreaving tickets, error: %s\n", err)
+		log.Printf("Something unexpected went wrong while retreaving tickets from repo, error: %s\n", err)
 	}
 	if err := cur.Close(context.TODO()); err != nil {
-		log.Printf("Unable to close cursor while retreaving tickets, error: %s\n", err)
+		log.Printf("Unable to close cursor while retreaving tickets from repo, error: %s\n", err)
 	}
 
 	if len(results) == 0 {
@@ -89,7 +89,7 @@ func (r *MongoTicketRepository) Update(ticket model.Ticket) error {
 
 	updateResult, err := r.collection.UpdateOne(context.TODO(), filter, update)
 	if updateResult.MatchedCount == 0 || updateResult.ModifiedCount == 0 {
-		return errors.New("Ticket '" + ticket.ID + "' cannot be updated because it has not been created yet")
+		return errors.New("Ticket '" + ticket.ID + "' cannot be updated from repo because it has not been created yet")
 	}
 	return err
 }
@@ -97,7 +97,7 @@ func (r *MongoTicketRepository) Update(ticket model.Ticket) error {
 func (r *MongoTicketRepository) Delete(ID string) error {
 	deleteResult, err := r.collection.DeleteOne(context.TODO(), bson.D{{"id", ID}}, nil)
 	if deleteResult.DeletedCount == 0 {
-		return errors.New("Ticket '" + ID + "' cannot be deleted because it does not exist")
+		return errors.New("Ticket '" + ID + "' cannot be deleted from repo because it does not exist")
 	}
 	return err
 }

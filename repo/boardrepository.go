@@ -26,7 +26,7 @@ func (r *MongoBoardRepository) FindByID(ID string) model.Board {
 	var result model.Board
 	err := r.collection.FindOne(context.TODO(), bson.D{{"id", ID}}).Decode(&result)
 	if err != nil {
-		log.Printf("Unable to retrieve board with ID: '%s', error: %s\n", ID, err)
+		log.Printf("Unable to retrieve board with ID: '%s' from repo, error: %s\n", ID, err)
 		return model.Board{}
 	}
 	return result
@@ -37,7 +37,7 @@ func (r *MongoBoardRepository) findMany(filter bson.D) []model.Board {
 
 	cur, err := r.collection.Find(context.TODO(), filter, nil)
 	if err != nil {
-		log.Printf("Unable to retrieve boards, error: %s\n", err)
+		log.Printf("Unable to retrieve boards from repo, error: %s\n", err)
 		return []model.Board{}
 	}
 
@@ -45,16 +45,16 @@ func (r *MongoBoardRepository) findMany(filter bson.D) []model.Board {
 		var elem model.Board
 		err := cur.Decode(&elem)
 		if err != nil {
-			log.Printf("Unable to decode board, error: %s\n", err)
+			log.Printf("Unable to decode board from repo, error: %s\n", err)
 		}
 		results = append(results, elem)
 	}
 
 	if err := cur.Err(); err != nil {
-		log.Printf("Something unexpected went wrong while retreaving boards, error: %s\n", err)
+		log.Printf("Something unexpected went wrong while retreaving boards from repo, error: %s\n", err)
 	}
 	if err := cur.Close(context.TODO()); err != nil {
-		log.Printf("Unable to close cursor while retreaving boards, error: %s\n", err)
+		log.Printf("Unable to close cursor while retreaving boards from repo, error: %s\n", err)
 	}
 
 	if len(results) == 0 {
@@ -84,7 +84,7 @@ func (r *MongoBoardRepository) Update(board model.Board) error {
 
 	updateResult, err := r.collection.UpdateOne(context.TODO(), filter, update)
 	if updateResult.MatchedCount == 0 || updateResult.ModifiedCount == 0 {
-		return errors.New("Board '" + board.ID + "' cannot be updated because it has not been created yet")
+		return errors.New("Board '" + board.ID + "' cannot be updated from repo because it has not been created yet")
 	}
 	return err
 }
@@ -92,7 +92,7 @@ func (r *MongoBoardRepository) Update(board model.Board) error {
 func (r *MongoBoardRepository) Delete(ID string) error {
 	deleteResult, err := r.collection.DeleteOne(context.TODO(), bson.D{{"id", ID}}, nil)
 	if deleteResult.DeletedCount == 0 {
-		return errors.New("Board '" + ID + "' cannot be deleted because it does not exist")
+		return errors.New("Board '" + ID + "' cannot be deleted from repo because it does not exist")
 	}
 	return err
 }
