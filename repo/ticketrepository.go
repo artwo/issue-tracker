@@ -57,6 +57,10 @@ func (r *MongoTicketRepository) findMany(filter bson.D) []model.Ticket {
 		log.Printf("Unable to close cursor while retreaving tickets, error: %s\n", err)
 	}
 
+	if len(results) == 0 {
+		return make([]model.Ticket, 0)
+	}
+
 	return results
 }
 

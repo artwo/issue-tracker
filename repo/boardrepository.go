@@ -57,6 +57,10 @@ func (r *MongoBoardRepository) findMany(filter bson.D) []model.Board {
 		log.Printf("Unable to close cursor while retreaving boards, error: %s\n", err)
 	}
 
+	if len(results) == 0 {
+		return make([]model.Board, 0)
+	}
+
 	return results
 }
 
