@@ -52,15 +52,15 @@ func (c *RestController) postBoard(w http.ResponseWriter, r *http.Request) {
 func (c *RestController) deleteBoard(w http.ResponseWriter, r *http.Request) {
 	boardID := chi.URLParam(r, "boardID")
 	if boardID == "" {
-		log.Println("Received a delete ticket request with no boardID.")
+		log.Println("Received a delete board request with no boardID.")
 		c.error(w, http.StatusBadRequest, "The path parameter 'boardID' is missing", nil)
 		return
 	}
 
 	board := c.BoardService.GetBoard(boardID)
 	if board.IsNull() {
-		log.Printf("Unable to find ticket with ID '%s'.\n", boardID)
-		c.error(w, http.StatusNotFound, "Ticket not found", nil)
+		log.Printf("Unable to find board with ID '%s'.\n", boardID)
+		c.error(w, http.StatusNotFound, "Board not found", nil)
 		return
 	}
 

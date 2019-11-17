@@ -6,7 +6,7 @@ type Board struct {
 	ID          string   `json:"id,omitempty"`
 	Name        string   `json:"name,omitempty"`
 	Description string   `json:"description,omitempty"`
-	Tickets     []Ticket `json:"description,omitempty"`
+	Tickets     []Ticket `json:"tickets,omitempty"`
 }
 
 func (b *Board) Validate() []error {
